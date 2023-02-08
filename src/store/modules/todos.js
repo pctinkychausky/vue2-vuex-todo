@@ -1,14 +1,26 @@
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
-const state = {
-  todos: [],
-};
+function createState() {
+  const state = {
+    todos: [],
+  };
+
+  state.copyTodos = [...state.todos];
+
+  return state;
+}
+
+const state = createState();
 
 //getting the state
 const getters = {
   allTodos: (state) => {
     return state.todos;
+  },
+
+  copyTodos: (state) => {
+    return state.copyTodos;
   },
 };
 
@@ -26,7 +38,6 @@ const actions = {
         }
         return { ...todo, uuid };
       });
-      console.log("🚀 ~ file: todos.js:29 ~ todos ~ todos", todos);
 
       commit("setTodos", todos);
     } catch (error) {
@@ -49,9 +60,8 @@ const actions = {
       const response = await axios.get(
         `https://jsonplaceholder.typicode.com/todos/${uuid}`
       );
-      // const duplicatedTodo = { ...response.data, id: uuidv4() };
+
       const duplicatedTodo = { ...response.data };
-      console.log("🚀 ~ file: todos.js:45 ~ duplicatedTodo", duplicatedTodo);
       const newResponse = await axios.post(
         `https://jsonplaceholder.typicode.com/todos/`,
         duplicatedTodo
@@ -131,7 +141,11 @@ const actions = {
 const mutations = {
   setTodos: (state, todos) => {
     state.todos = todos;
+    state.copyTodos = [...state.todos];
+    console.log("🚀 ~ file: todos.js:8 ~ todos", state.todos);
+    console.log("🚀 ~ file: todos.js:8 ~ copyTodos", state.copyTodos);
   },
+
   removeTodo: (state, uuid) => {
     state.todos = state.todos.filter((todo) => todo.uuid !== uuid);
   },
@@ -143,8 +157,9 @@ const mutations = {
   },
   addTodo: (state, newTodo) => {
     state.todos.unshift(newTodo);
-    console.log("🚀 ~ file: todos.js:137 ~ state", state.todos);
-    console.log("🚀 ~ file: todos.js:138 ~ newTodo", newTodo);
+    state.copyTodos.unshift(newTodo);
+    console.log("🚀 ~ file: todos.js:8 ~ todos", state.todos);
+    console.log("🚀 ~ file: todos.js:8 ~ copyTodos", state.copyTodos);
   },
 };
 
