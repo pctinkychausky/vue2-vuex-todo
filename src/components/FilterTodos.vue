@@ -16,7 +16,7 @@
       <div>
         <h1 class="text-4xl font-bold">filterTodosByStatus</h1>
         <select name="" v-on:change="filterTodosByStatus($event)">
-          <option value="all">All</option>
+          <option selected value="all">All</option>
           <option value="true">Completed</option>
           <option value="false">Incompleted</option>
         </select>

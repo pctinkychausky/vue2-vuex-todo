@@ -62,10 +62,16 @@ export default {
   name: "TodosItem",
 
   methods: {
-    ...mapActions(["fetchTodos", "deleteTodo", "updateTodo", "duplicateTodo"]),
+    ...mapActions([
+      "fetchTodos",
+      "filterTodosByStatus",
+      "deleteTodo",
+      "updateTodo",
+      "duplicateTodo",
+    ]),
     onDblClick(todo) {
       const updatedTodo = {
-        id: todo.uuid,
+        uuid: todo.uuid,
         title: todo.title,
         completed: !todo.completed,
         dueDate: todo.dueDate,
