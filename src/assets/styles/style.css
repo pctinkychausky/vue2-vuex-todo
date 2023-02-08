@@ -1,0 +1,39 @@
+/* body html {
+  @tailwind m-0 px-5;
+} */
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+html,
+body {
+  font-family: "Open Sans", sans-serif;
+}
+
+.todos {
+}
+
+.todo {
+}
+
+.fa-solid {
+  cursor: grab;
+}
+
+.incomplete-box {
+  background: #35495e;
+}
+
+.complete-box {
+  background: #41b883;
+}
+
+.is-complete {
+  background: #35495e;
+}
+
+.fa-copy {
+  cursor: grab;
+}
+
+.submit {
+  cursor: grab;
+}
