@@ -45,33 +45,47 @@ const actions = {
       console.log(error);
     }
   },
+  // async deleteTodo({ commit }, uuid) {
+  //   try {
+  //     await axios.delete(`https://jsonplaceholder.typicode.com/todos/${uuid}`);
+  //     commit("removeTodo", uuid);
+  //   } catch (error) {
+  //     alert(error);
+  //     console.log(error);
+  //   }
+  // },
+
   async deleteTodo({ commit }, uuid) {
-    try {
-      await axios.delete(`https://jsonplaceholder.typicode.com/todos/${uuid}`);
-      commit("removeTodo", uuid);
-    } catch (error) {
-      alert(error);
-      console.log(error);
-    }
+    console.log("🚀 ~ file: todos.js:59 ~ uuid", uuid);
+    commit("removeTodo", uuid);
   },
 
-  async duplicateTodo({ commit }, uuid) {
-    try {
-      const response = await axios.get(
-        `https://jsonplaceholder.typicode.com/todos/${uuid}`
-      );
+  // async duplicateTodo({ commit }, uuid) {
+  //   try {
+  //     const response = await axios.get(
+  //       `https://jsonplaceholder.typicode.com/todos/${uuid}`
+  //     );
 
-      const duplicatedTodo = { ...response.data };
-      const newResponse = await axios.post(
-        `https://jsonplaceholder.typicode.com/todos/`,
-        duplicatedTodo
-      );
-      console.log("🚀 ~ file: todos.js:50 ~ newResponse", newResponse);
-      commit("addTodo", newResponse.data);
-    } catch (error) {
-      alert(error);
-      console.log(error);
-    }
+  //     const duplicatedTodo = { ...response.data };
+  //     const newResponse = await axios.post(
+  //       `https://jsonplaceholder.typicode.com/todos/`,
+  //       duplicatedTodo
+  //     );
+  //     console.log("🚀 ~ file: todos.js:50 ~ newResponse", newResponse);
+  //     commit("addTodo", newResponse.data);
+  //   } catch (error) {
+  //     alert(error);
+  //     console.log(error);
+  //   }
+  // },
+
+  async duplicateTodo({ commit, state }, uuid) {
+    const todo = state.copyTodos.find((todo) => todo.uuid === uuid);
+    const duplicatedTodo = { ...todo };
+    console.log("🚀 ~ file: todos.js:79 ~ duplicatedTodo", duplicatedTodo);
+    duplicatedTodo.uuid = uuidv4();
+    console.log("🚀 ~ file: todos.js:81 ~ duplicatedTodo", duplicatedTodo);
+    commit("addTodo", duplicatedTodo);
   },
 
   async updateTodo({ commit }, updatedTodo) {
@@ -147,7 +161,7 @@ const mutations = {
   },
 
   removeTodo: (state, uuid) => {
-    state.todos = state.todos.filter((todo) => todo.uuid !== uuid);
+    state.copyTodos = state.copyTodos.filter((todo) => todo.uuid !== uuid);
   },
   updateTodo: (state, updatedTodo) => {
     const index = state.todos.findIndex((todo) => todo.id === updatedTodo.id);

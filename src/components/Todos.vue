@@ -51,35 +51,6 @@
           </div>
         </div>
       </div>
-
-      <div>ssssssssssssss</div>
-
-      <div class="todos mt-6 flex flex-col space-y-4">
-        <div
-          v-for="todo in allTodos"
-          class="todo h-10 bg-blue-500 flex justify-between items-center"
-          v-bind:key="todo.key"
-        >
-          <div class="todo-title text-gray-50 flex-initial w-128 pl-20">
-            Task: {{ todo.title }}
-          </div>
-          <div class="due-date text-gray-50 flex-initial w-128">
-            Due Date: {{ todo.dueDate }}
-          </div>
-          <div class="flex flex-initial w-32 gap-4">
-            <font-awesome-icon
-              icon="fa-solid fa-copy"
-              class="fa-copy"
-              @click="duplicateTodo(todo.uuid)"
-            />
-            <font-awesome-icon
-              icon="fa-solid fa-trash "
-              class="fa-solid"
-              @click="deleteTodo(todo.uuid)"
-            />
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
