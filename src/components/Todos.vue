@@ -29,12 +29,23 @@
           class="todo h-10 bg-blue-500 flex justify-between items-center"
           v-bind:key="task.key"
           @dblclick="onDblClick(task)"
-          v-bind:class="{ 'is-complete': task.completed }"
+          v-bind:class="[
+            {
+              'is-complete': task.completed,
+            },
+            dueDateColor(task),
+          ]"
         >
-          <div class="todo-title text-gray-50 flex-initial w-128 pl-20">
+          <div
+            class="todo-title text-gray-50 flex-initial w-128 pl-20"
+            v-bind:class="[dueDateColor(task)]"
+          >
             Task: {{ task.title }}
           </div>
-          <div class="due-date text-gray-50 flex-initial w-128">
+          <div
+            class="due-date text-gray-50 flex-initial w-128"
+            v-bind:class="[dueDateColor(task)]"
+          >
             Due Date: {{ task.dueDate }}
           </div>
           <div class="flex flex-initial w-32 gap-4">
@@ -77,6 +88,15 @@ export default {
         dueDate: todo.dueDate,
       };
       this.updateTodo(updatedTodo);
+    },
+    dueDateColor(task) {
+      const dueDate = new Date(task.dueDate);
+      const currentDate = new Date();
+
+      if (dueDate < currentDate) {
+        return "text-red-600";
+      }
+      return "";
     },
   },
 

@@ -7,7 +7,7 @@
           <input
             type="text"
             v-model="title"
-            placeholder="Add Todo"
+            placeholder="Enter Todo Title"
             class="flex-1"
             required
           />
@@ -47,15 +47,6 @@ export default {
       this.dueDate = null;
     },
   },
-
-  // methods: {
-  //   ...mapActions(["addTodo"]),
-  //   onSubmit(e) {
-  //     e.preventDefault();
-  //     this.addTodo(this.title);
-  //     this.title = "";
-  //   },
-  // },
 };
 </script>
 
