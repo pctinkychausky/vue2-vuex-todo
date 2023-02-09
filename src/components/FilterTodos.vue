@@ -15,7 +15,8 @@
 
       <div>
         <h1 class="text-4xl font-bold">filterTodosByStatus</h1>
-        <select name="" v-on:change="filterTodosByStatus($event)">
+        <select v-model="filterStatus" @change="filterByStatus">
+          <!-- <select name="" v-on:change="filterTodosByStatus($event)"> -->
           <option selected value="all">All</option>
           <option value="true">Completed</option>
           <option value="false">Incompleted</option>
@@ -30,8 +31,16 @@ import { mapActions } from "vuex";
 
 export default {
   name: "FilterTodos",
+  data() {
+    return {
+      filterStatus: "",
+    };
+  },
   methods: {
     ...mapActions(["filterTodos", "filterTodosByStatus"]),
+    filterByStatus() {
+      this.filterTodosByStatus(this.filterStatus);
+    },
   },
 };
 </script>

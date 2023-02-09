@@ -1,26 +1,14 @@
-import axios from "axios";
+// import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-
-// function createState() {
-//   const state = {
-//     todos: [],
-//   };
-
-//   state.copyTodos = [...state.todos];
-
-//   return state;
-// }
-
-// const state = createState();
 
 function createState() {
   const state = {
     todos: [],
   };
 
-  state.copyTodos = [...state.todos];
-
-  localStorage.setItem("localTodos", JSON.stringify(state.copyTodos));
+  state.tasks = JSON.parse(localStorage.getItem("TASKS"))
+    ? JSON.parse(localStorage.getItem("TASKS"))
+    : [...state.todos];
 
   return state;
 }
@@ -29,95 +17,30 @@ const state = createState();
 
 //getting the state
 const getters = {
-  allTodos: (state) => {
-    return state.todos;
+  Tasks: () => {
+    return state.tasks;
   },
 
-  copyTodos: (state) => {
-    return state.copyTodos;
-  },
-
-  localTodos: () => {
-    return JSON.parse(localStorage.getItem("localTodos")) || [];
-  },
+  CompletedTodos: (state) =>
+    state.tasks.filter((todo) => {
+      return todo.completed;
+    }),
 };
 
 const actions = {
   async fetchTodos({ commit }) {
-    try {
-      const response = await axios.get(
-        "https://jsonplaceholder.typicode.com/todos?_limit=10"
-      );
-
-      const todos = response.data.map((todo) => {
-        let { uuid } = todo;
-        if (!uuid) {
-          uuid = todo.id;
-        }
-        return { ...todo, uuid };
-      });
-
-      commit("setTodos", todos);
-    } catch (error) {
-      alert(error);
-      console.log(error);
-    }
-  },
-  // async deleteTodo({ commit }, uuid) {
-  //   try {
-  //     await axios.delete(`https://jsonplaceholder.typicode.com/todos/${uuid}`);
-  //     commit("removeTodo", uuid);
-  //   } catch (error) {
-  //     alert(error);
-  //     console.log(error);
-  //   }
-  // },
-
-  async deleteTodo({ commit }, uuid) {
-    console.log("🚀 ~ file: todos.js:59 ~ uuid", uuid);
-    commit("removeTodo", uuid);
+    let localTodosFromStorage = JSON.parse(localStorage.getItem("localTodos"));
+    let localTodos = localTodosFromStorage;
+    commit("setTodos", localTodos);
   },
 
-  // async duplicateTodo({ commit }, uuid) {
-  //   try {
-  //     const response = await axios.get(
-  //       `https://jsonplaceholder.typicode.com/todos/${uuid}`
-  //     );
-
-  //     const duplicatedTodo = { ...response.data };
-  //     const newResponse = await axios.post(
-  //       `https://jsonplaceholder.typicode.com/todos/`,
-  //       duplicatedTodo
-  //     );
-  //     console.log("🚀 ~ file: todos.js:50 ~ newResponse", newResponse);
-  //     commit("addTodo", newResponse.data);
-  //   } catch (error) {
-  //     alert(error);
-  //     console.log(error);
-  //   }
-  // },
-
-  async duplicateTodo({ commit, state }, uuid) {
-    const todo = state.copyTodos.find((todo) => todo.uuid === uuid);
-    const duplicatedTodo = { ...todo };
-    console.log("🚀 ~ file: todos.js:79 ~ duplicatedTodo", duplicatedTodo);
-    duplicatedTodo.uuid = uuidv4();
-    console.log("🚀 ~ file: todos.js:81 ~ duplicatedTodo", duplicatedTodo);
-    commit("addTodo", duplicatedTodo);
+  async deleteTodo({ commit }, task) {
+    commit("removeTodo", task);
   },
 
-  // async updateTodo({ commit }, updatedTodo) {
-  //   try {
-  //     const response = await axios.put(
-  //       `https://jsonplaceholder.typicode.com/todos/${updatedTodo.id}`,
-  //       updatedTodo
-  //     );
-  //     commit("updateTodo", response.data);
-  //   } catch (error) {
-  //     alert(error);
-  //     console.log(error);
-  //   }
-  // },
+  async duplicateTodo({ commit }, task) {
+    commit("addTodo", task);
+  },
 
   async updateTodo({ commit }, updatedTodo) {
     commit("updateTodo", updatedTodo);
@@ -125,190 +48,96 @@ const actions = {
 
   async addTodo({ commit }, todo) {
     const { dueDate, title } = todo;
-    console.log("🚀 ~ file: todos.js:70 ~ title", title);
-    console.log("🚀 ~ file: todos.js:70 ~ dueDate", dueDate);
+    let newTask = {
+      title: title,
+      dueDate: dueDate,
+      completed: false,
+      uuid: uuidv4(),
+    };
 
-    try {
-      const response = await axios.post(
-        `https://jsonplaceholder.typicode.com/todos/`,
-        // { completed: false, idtest: uuidv4() }
-        { title: title, dueDate: dueDate, completed: false, uuid: uuidv4() }
-      );
-      console.log(response.data);
-      commit("addTodo", response.data);
-    } catch (error) {
-      alert(error);
-      console.log(error);
-    }
+    commit("addTodo", newTask);
   },
 
-  // async filterTodos({ commit }, event) {
-  //   //Get the Limit
-  //   const limit = parseInt(
-  //     event.target.options[event.target.options.selectedIndex].innerText
-  //   );
-  //   const response = await axios.get(
-  //     `https://jsonplaceholder.typicode.com/todos?_limit=${limit}`
-  //   );
-  //   commit("setTodos", response.data);
-  // },
-
-  async filterTodos({ commit, state }, event) {
-    const status = event.target.value;
-    let filteredTodos;
-
+  filterTodosByStatus({ commit }, status) {
     console.log(
-      "🚀 ~ file: todos.js:160 ~ filterTodos ~ state.copyTodos",
-      state.copyTodos
+      "🚀 ~ file: todos.js:64 ~ filterTodosByStatus ~ status",
+      typeof status
     );
-    if (status == "200") {
-      filteredTodos = state.copyTodos.filter((todo) => todo.length <= 200);
-    } else if (status == "100") {
-      filteredTodos = state.copyTodos.filter((todo) => todo.length <= 100);
-    } else if (status == "50") {
-      filteredTodos = state.copyTodos.filter((todo) => todo.length <= 50);
-    } else if (status == "20") {
-      filteredTodos = state.copyTodos.filter((todo) => todo.length <= 20);
-    } else if (status == "10") {
-      filteredTodos = state.copyTodos.filter((todo) => todo.length <= 10);
-    } else {
-      filteredTodos = state.copyTodos.filter((todo) => todo.length <= 5);
-      console.log(
-        "🚀 ~ file: todos.js:172 ~ filterTodos ~ filteredTodos",
-        filteredTodos
-      );
-    }
-    commit("filteredTodos", filteredTodos);
-  },
-
-  //   async filterTodosByStatus({ commit }, event) {
-  //     const status = event.target.value;
-
-  //     try {
-  //       let response;
-  //       if (status === "all") {
-  //         response = await axios.get(
-  //           "https://jsonplaceholder.typicode.com/todos"
-  //         );
-  //       } else
-  //         response = await axios.get(
-  //           `https://jsonplaceholder.typicode.com/todos?completed=${status}`
-  //         );
-  //       commit("setTodos", response.data);
-  //     } catch (error) {
-  //       alert(error);
-  //       console.log(error);
-  //     }
-  //   },
-
-  async filterTodosByStatus({ commit }, event) {
-    const status = event.target.value;
-    const localTodosFromStorage = JSON.parse(
-      localStorage.getItem("localTodos")
+    const filteredTodos = state.tasks.filter(
+      (todo) => todo.completed === Boolean(status)
     );
-
-    let filteredTodos;
-    if (status == "true") {
-      filteredTodos = localTodosFromStorage.filter(
-        (item) => item.completed === true
-      );
-    } else if (status == "false") {
-      filteredTodos = localTodosFromStorage.filter(
-        (item) => item.completed !== true
-      );
-    } else {
-      filteredTodos = localTodosFromStorage;
-    }
-    commit("filteredTodos", filteredTodos);
+    console.log(
+      "🚀 ~ file: todos.js:66 ~ filterTodosByStatus ~ filteredTodos",
+      filteredTodos
+    );
+    commit("setFilteredTodos", filteredTodos);
   },
-
-  // async filterTodosByStatus({ commit, state }, event) {
-  //   const status = event.target.value;
-  //   console.log(
-  //     "🚀 ~ file: todos.js:160 ~ filterTodosByStatus ~ status",
-  //     status
-  //   );
-
-  //   let filteredTodos;
-  //   if (status == "all") {
-  //     filteredTodos = state.copyTodos.filter((item) => item);
-  //     commit("setTodos", filteredTodos);
-  //   } else if (status == "true") {
-  //     filteredTodos = state.copyTodos.filter((item) => item.completed == true);
-  //     commit("filteredTodosTrue", filteredTodos);
-  //   } else {
-  //     filteredTodos = state.copyTodos.filter((item) => item.completed !== true);
-  //     commit("filteredTodosFalse", filteredTodos);
-  //   }
-  // },
 };
 
 const mutations = {
-  setTodos: (state, todos) => {
-    state.todos = todos;
-    state.copyTodos = [...state.todos];
-    localStorage.setItem("localTodos", JSON.stringify(state.copyTodos));
+  setFilteredTodos(state, filteredTodos) {
+    state.filteredTodos = filteredTodos;
+    console.log(
+      "🚀 ~ file: todos.js:74 ~ setFilteredTodos ~ state.filteredTodos",
+      state.filteredTodos
+    );
   },
 
-  filteredTodos: (state, todos) => {
-    state.copyTodos = todos;
-    localStorage.setItem("localTodos", JSON.stringify(state.copyTodos));
-  },
+  // setTodos: (state, localTodos) => {
+  //   state.localTodos = localStorage.setItem(
+  //     "localTodos",
+  //     JSON.stringify("localTodos", localTodos)
+  //   );
+  // },
 
-  removeTodo: (state, uuid) => {
-    state.copyTodos = state.copyTodos.filter((todo) => todo.uuid !== uuid);
-    localStorage.setItem("localTodos", JSON.stringify(state.copyTodos));
+  removeTodo: (state, task) => {
+    console.log("🚀 ~ file: todos.js:283 ~ task", task);
+    let removeItemIndex = state.tasks.indexOf(task);
+    console.log("🚀 ~ file: todos.js:287 ~ removeItemIndex", removeItemIndex);
+
+    state.tasks.splice(removeItemIndex, 1);
+    let a = state.tasks;
+    console.log("🚀 ~ file: todos.js:285 ~ a", a);
+    localStorage.setItem("TASKS", JSON.stringify(a));
+    state.tasks = JSON.parse(localStorage.getItem("TASKS"));
   },
 
   updateTodo: (state, updatedTodo) => {
-    const index = state.copyTodos.findIndex(
+    const index = state.tasks.findIndex(
       (todo) => todo.uuid === updatedTodo.uuid
     );
     if (index !== -1) {
-      state.copyTodos.splice(index, 1, updatedTodo);
-      localStorage.setItem("localTodos", JSON.stringify(state.copyTodos));
+      state.tasks.splice(index, 1, updatedTodo);
+      let a = state.tasks;
+      localStorage.setItem("TASKS", JSON.stringify(a));
+      state.tasks = JSON.parse(localStorage.getItem("TASKS"));
     }
   },
 
-  addTodo: (state, newTodo) => {
-    state.todos.unshift(newTodo);
-    state.copyTodos.unshift(newTodo);
-    localStorage.setItem("localTodos", JSON.stringify(state.copyTodos));
+  addTodo: (state, newTask) => {
+    console.log("🚀 ~ file: todos.js:145 ~ state", state);
+    const { title, dueDate, completed, uuid } = newTask;
+
+    let existingTaskIndex = state.tasks.findIndex((todo) => todo.uuid === uuid);
+    console.log(
+      "🚀 ~ file: todos.js:312 ~ existingTaskIndex",
+      existingTaskIndex
+    );
+
+    if (existingTaskIndex !== -1) {
+      let newUuid = uuidv4();
+      let updatedTask = { ...state.tasks[existingTaskIndex], uuid: newUuid };
+      state.tasks.unshift(updatedTask);
+      let a = [...state.tasks];
+      localStorage.setItem("TASKS", JSON.stringify(a));
+      state.tasks = JSON.parse(localStorage.getItem("TASKS"));
+    } else {
+      let a = [{ title, dueDate, completed, uuid }, ...state.tasks];
+      localStorage.setItem("TASKS", JSON.stringify(a));
+      state.tasks = JSON.parse(localStorage.getItem("TASKS"));
+    }
   },
 };
-
-// const mutations = {
-//   setTodos: (state, todos) => {
-//     state.todos = todos;
-//     state.copyTodos = [...state.todos];
-//   },
-
-//   filteredTodos: (state, todos) => {
-//     state.copyTodos = todos;
-//   },
-
-//   removeTodo: (state, uuid) => {
-//     state.copyTodos = state.copyTodos.filter((todo) => todo.uuid !== uuid);
-//   },
-
-//   updateTodo: (state, updatedTodo) => {
-//     const index = state.copyTodos.findIndex(
-//       (todo) => todo.uuid === updatedTodo.uuid
-//     );
-//     if (index !== -1) {
-//       state.copyTodos.splice(index, 1, updatedTodo);
-//       console.log(
-//         "🚀 ~ file: todos.js:178 ~  state.copyTodos",
-//         state.copyTodos
-//       );
-//     }
-//   },
-
-//   addTodo: (state, newTodo) => {
-//     state.todos.unshift(newTodo);
-//     state.copyTodos.unshift(newTodo);
-//   },
-// };
 
 export default {
   state,

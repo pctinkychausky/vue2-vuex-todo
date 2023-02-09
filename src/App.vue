@@ -1,25 +1,13 @@
 <template>
-  <div id="app" class="w-3/4 mx-auto text-center">
-    <div class="flex flex-col gap-5">
-      <AddTodo />
-      <FilterTodos />
-      <Todos />
-    </div>
+  <div id="app">
+    <router-view> </router-view>
   </div>
 </template>
 
 <script>
-import AddTodo from "./components/AddTodo.vue";
-import FilterTodos from "./components/FilterTodos.vue";
-import Todos from "./components/Todos.vue";
-
 export default {
   name: "App",
-  components: {
-    AddTodo,
-    FilterTodos,
-    Todos,
-  },
+  components: {},
 };
 </script>
 

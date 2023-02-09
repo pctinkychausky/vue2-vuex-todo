@@ -15,7 +15,7 @@
             v-model="dueDate"
             placeholder="Select Due Date"
           ></date-picker>
-          <input type="submit" value="Submit" class="submit" />
+          <input type="submit" value="Submit" class="submit px-4" />
         </form>
       </div>
     </div>
