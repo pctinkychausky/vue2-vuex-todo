@@ -1,4 +1,4 @@
-###Introduction: 
+### Introduction: 
 This is a Vue2 based Todo List application. The code sets up a Vue instance wit ha store, router and the components being rendered. 
 
 The code also includes a state mangement section by Vuex and Tailwind CSS.  
