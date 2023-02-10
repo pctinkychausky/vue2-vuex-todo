@@ -1,16 +1,16 @@
 <template>
-  <div class="w-3/4 mx-auto text-center">
-    <div class="flex flex-col gap-20">
+  <div class="lg:w-3/4 mx-auto text-center lg:w-4/5 w-11/12">
+    <div class="lg:flex lg:flex-col lg:gap-20 flex flex-col gap-7">
       <AddTodo />
       <div class="">
         <div>
           <router-link
             to="/completed"
-            class="bg-gray-600 text-gray-50 px-2 py-4"
+            class="rounded-lg bg-gray-600 text-gray-50 px-2 lg:py-4 py-3"
             >Go to Completed List</router-link
           >
         </div>
-        <div class="mt-20"><Todos /></div>
+        <div class="lg:mt-20 mt-10"><Todos /></div>
       </div>
     </div>
   </div>

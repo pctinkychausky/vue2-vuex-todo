@@ -1,32 +1,34 @@
 <template>
   <div>
     <div>
-      <h1 class="text-4xl font-bold">Todos</h1>
-      <div class="legend mt-12 flex justify-evenly">
+      <h1 class="lg:text-4xl lg:font-bold text-4xl">Todos</h1>
+      <div
+        class="legend lg:text-xl lg:mt-12 lg:flex lg:justify-evenly text-xs lg:gap-3 flex mt-6"
+      >
         <span>Double click to mark as complete</span>
         <span>
           <span class="incomplete-box px-2"></span>
-          <span> = Incomplete</span>
+          <span class="ml-2"> Incomplete</span>
         </span>
 
         <span>
           <span class="complete-box px-2"> </span>
-          <span> = Complete</span>
+          <span class="ml-2"> Complete</span>
         </span>
         <span>
           <font-awesome-icon icon="fa-solid fa-copy" />
-          <span> = Duplicate item</span>
+          <span> Duplicate item</span>
         </span>
         <span>
           <font-awesome-icon icon="fa-solid fa-trash " />
-          <span> = Delete item</span>
+          <span> Delete item</span>
         </span>
       </div>
 
       <div class="todos mt-6 flex flex-col space-y-4">
         <div
           v-for="task in Tasks"
-          class="todo h-10 bg-blue-500 flex justify-between items-center"
+          class="todo rounded-lg flex flex-col justify-center h-24 bg-blue-500 lg:h-16 lg:flex lg:flex-row lg:justify-evenly lg:items-center"
           v-bind:key="task.key"
           @dblclick="onDblClick(task)"
           v-bind:class="[
@@ -37,18 +39,18 @@
           ]"
         >
           <div
-            class="todo-title text-gray-50 flex-initial w-128 pl-20"
+            class="lg:flex todo-title text-gray-50 lg:shrink-0 lg:grow-0 lg:w-50"
             v-bind:class="[dueDateColor(task)]"
           >
-            Task: {{ task.title }}
+            {{ task.title }}
           </div>
           <div
-            class="due-date text-gray-50 flex-initial w-128"
+            class="due-date text-gray-50 lg:shrink-0 lg:w-30"
             v-bind:class="[dueDateColor(task)]"
           >
-            Due Date: {{ task.dueDate }}
+            {{ task.dueDate }}
           </div>
-          <div class="flex flex-initial w-32 gap-4">
+          <div class="lg:flex lg:gap-4 lg:w-20 flex justify-center gap-2">
             <font-awesome-icon
               icon="fa-solid fa-copy"
               class="fa-copy"
@@ -104,4 +106,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.todo {
+  overflow-wrap: break-word;
+}
+</style>

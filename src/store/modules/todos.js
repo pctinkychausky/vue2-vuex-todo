@@ -48,6 +48,8 @@ const actions = {
 
   async addTodo({ commit }, todo) {
     const { dueDate, title } = todo;
+    console.log("🚀 ~ file: AddTodo.vue:59 ~ onSubmit ~ dueDate", dueDate);
+
     let newTask = {
       title: title,
       dueDate: dueDate,
